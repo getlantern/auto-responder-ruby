@@ -6,23 +6,28 @@ require "mailman"
 require 'base64'
 require 'mailchimp'
 
+EMAIL_RESPONDER_ACCOUNT = ENV["EMAIL_RESPONDER_ACCOUNT"] or abort("no environment variable EMAIL_RESPONDER_ACCOUNT")
+EMAIL_RESPONDER_PASSWORD = ENV["EMAIL_RESPONDER_PASSWORD"] or abort("no environment variable EMAIL_RESPONDER_PASSWORD")
+MAILCHIMP_API_KEY = ENV["MAILCHIMP_API_KEY"] or abort("no environment variable MAILCHIMP_API_KEY")
+MAILCHIMP_LIST_ID = ENV["MAILCHIMP_LIST_ID"] or abort("no environment variable MAILCHIMP_LIST_ID")
+
 Mailman.config.logger = Logger.new("log/mailman.log")
 
 Mailman.config.poll_interval = 1
 
 Mailman.config.imap = {
   server: 'imap.gmail.com', port: 993, ssl: true,
-  username: ENV['EMAIL_RESPONDER_ACCOUNT'],
-  password: ENV['EMAIL_RESPONDER_PASSWORD'],
-  filter: 'UNSEEN FROM getlantern.org'
+  username: EMAIL_RESPONDER_ACCOUNT,
+  password: EMAIL_RESPONDER_PASSWORD,
+  filter: 'UNSEEN'
 }
 
 Mail.defaults do
   delivery_method :smtp,
     address: "smtp.gmail.com",
     port: 587,
-    user_name: ENV['EMAIL_RESPONDER_ACCOUNT'],
-    password: ENV['EMAIL_RESPONDER_PASSWORD'],
+    user_name: EMAIL_RESPONDER_ACCOUNT,
+    password: EMAIL_RESPONDER_PASSWORD,
     enable_ssl:  true
 end
 
@@ -30,12 +35,12 @@ def send_to(to, subject, reply_id)
   begin
     mail = Mail.new
 
-    # below are gmail auto responder
+    # below are headers added by gmail auto responder
     mail.header['Precedence'] = 'bulk'
     mail.header['X-Autoreply'] = 'yes'
     mail.header['Auto-Submitted'] = 'auto-replied'
 
-    # as reply to original mail
+    # connect the reply to original mail
     mail.header['In-Reply-To'] = reply_id
     mail.header['References'] = reply_id
 
@@ -73,8 +78,8 @@ def add_to_mailchimp(name, addr)
         'LNAME' => lname
       }
     end
-    mailchimp = Mailchimp::API.new(ENV["MAILCHIMP_API_KEY"])
-    mailchimp.lists.subscribe(ENV["MAILCHIMP_LIST_ID"],
+    mailchimp = Mailchimp::API.new(MAILCHIMP_API_KEY)
+    mailchimp.lists.subscribe(MAILCHIMP_LIST_ID,
                               { "email" => addr },
                               merge_vars,
                               'html', # email_type
@@ -99,8 +104,7 @@ Mailman::Application.run do
     end
   end
 
-  from "getlantern.org" do
-    #default do
+  default do
     begin
       from = message["From"].address_list.addresses[0].raw
       subject = message["Subject"].value
