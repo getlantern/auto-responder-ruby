@@ -63,12 +63,20 @@ def send_to(to, subject, reply_id)
   end
 end
 
-def add_to_mailchimp(addr)
+def add_to_mailchimp(name, addr)
   begin
+    merge_vars = nil
+    if name then
+      fname, lname = name.split
+      merge_vars = {
+        'FNAME' => fname,
+        'LNAME' => lname
+      }
+    end
     mailchimp = Mailchimp::API.new(ENV["MAILCHIMP_API_KEY"])
     mailchimp.lists.subscribe(ENV["MAILCHIMP_LIST_ID"],
                               { "email" => addr },
-                              nil, # merge_vars
+                              merge_vars,
                               'html', # email_type
                               false, # double_optin
                               true) # update_existing
@@ -98,7 +106,8 @@ Mailman::Application.run do
       subject = message["Subject"].value
       msg_id = message["Message-ID"].value
       send_to(from, subject, msg_id)
-      add_to_mailchimp(message.from[0])
+      name = message["From"].address_list.addresses[0].display_name
+      add_to_mailchimp(name, message.from[0])
     rescue Exception => e
       Mailman.logger.error "Exception occurred while processing message:\n#{message}"
       Mailman.logger.error [e, *e.backtrace].join("\n")
