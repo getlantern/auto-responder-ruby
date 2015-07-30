@@ -13,7 +13,7 @@ MAILCHIMP_LIST_ID = ENV["MAILCHIMP_LIST_ID"] or abort("no environment variable M
 
 imap_filter = 'UNSEEN FROM getlantern.org'
 imap_filter = 'UNSEEN' if ENV["PRODUCTION"] == "true"
-Mailman.config.logger = Logger.new("log/mailman.log")
+# Mailman.config.logger = Logger.new("log/mailman.log")
 
 Mailman.config.poll_interval = 1
 
