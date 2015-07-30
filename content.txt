@@ -1,0 +1,45 @@
+سلام بيننده عزيز شبكه من و تو،
+از تماس شما با تیم لنترن ممنونیم.. لنترن يك فيلترشكن است كه می‌توانيد روى كامپيوترتان نصب كنيد و بدون فيلتر به اينترنت وصل شويد. 
+
+جديدترين نسخه لنترن را ميتوانيد از لينک‌های  زير دریافت کنید.
+
+براى ويندوز اكس پى ٣ و بالاتر:
+https://s3.amazonaws.com/lantern/lantern-installer-manoto.exe
+
+براى اپل ۶۴ بيت و بالاتر:
+https://s3.amazonaws.com/lantern/lantern-installer-manoto.dmg
+
+براى اوبونتو ٣٢ بيت ١۴.٠۴ و بالاتر:
+https://s3.amazonaws.com/lantern/lantern-installer-manoto-32-bit.deb
+
+براى اوبونتو۶۴ بيت ١۴.٠۴ و بالاتر:
+https://s3.amazonaws.com/lantern/lantern-installer-manoto-64-bit.deb 
+
+اگر لينكهاى بالا فيلتر بود به لينك زير برويد:
+براى ويندوز اكس پى ٣ و بالاتر:
+https://raw.githubusercontent.com/getlantern/lantern-binaries/master/lantern-installer-manoto.exe
+
+براى اپل ۶۴ بيت و بالاتر:
+https://raw.githubusercontent.com/getlantern/lantern-binaries/master/lantern-installer-manoto.dmg
+
+براى اوبونتو ٣٢ بيت ١۴.٠۴ و بالاتر:
+https://raw.githubusercontent.com/getlantern/lantern-binaries/master/lantern-installer-manoto-32-bit.deb
+
+براى اوبونتو ۶۴ بيت ۱۴.۰۴ و بالاتر:
+https://raw.githubusercontent.com/getlantern/lantern-binaries/master/lantern-installer-manoto-64-bit.deb
+
+ ‫پس از دانلود شما می توانید یک تب در مرورگر باز کنید و به سایت ها برويد.
+
+لنترن با مرورگرهاي زير منطبق است:
+فايرفاكس، كروم، سافاري، اينترنت اكسپلورر(ده به بالا) 
+
+فايرتوييت فيلترشكن جديد ما براى گوشى‌هاى اندرويد است كه شما را به توييتر بدون فيلتر وصل مى‌كند.
+براى دانلود فايرتوييت يكى از دو لينك زير برويد:
+
+https://raw.githubusercontent.com/firetweet/downloads/master/firetweet-manoto.apk
+يا
+https://s3.amazonaws.com/firetweet/firetweet-manoto.apk
+
+
+با تشکر،
+تیم لنترن
