@@ -11,6 +11,8 @@ EMAIL_RESPONDER_PASSWORD = ENV["EMAIL_RESPONDER_PASSWORD"] or abort("no environm
 MAILCHIMP_API_KEY = ENV["MAILCHIMP_API_KEY"] or abort("no environment variable MAILCHIMP_API_KEY")
 MAILCHIMP_LIST_ID = ENV["MAILCHIMP_LIST_ID"] or abort("no environment variable MAILCHIMP_LIST_ID")
 
+imap_filter = 'UNSEEN FROM getlantern.org'
+imap_filter = 'UNSEEN' if ENV["PRODUCTION"] == "true"
 Mailman.config.logger = Logger.new("log/mailman.log")
 
 Mailman.config.poll_interval = 1
@@ -19,7 +21,7 @@ Mailman.config.imap = {
   server: 'imap.gmail.com', port: 993, ssl: true,
   username: EMAIL_RESPONDER_ACCOUNT,
   password: EMAIL_RESPONDER_PASSWORD,
-  filter: 'UNSEEN'
+  filter: imap_filter
 }
 
 Mail.defaults do
