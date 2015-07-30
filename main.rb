@@ -4,12 +4,11 @@ require "rubygems"
 require "bundler/setup"
 require "mailman"
 require 'base64'
-require 'mailchimp'
+require_relative 'lib/mailchimp'
+require_relative 'lib/ignore_mail'
 
 EMAIL_RESPONDER_ACCOUNT = ENV["EMAIL_RESPONDER_ACCOUNT"] or abort("no environment variable EMAIL_RESPONDER_ACCOUNT")
 EMAIL_RESPONDER_PASSWORD = ENV["EMAIL_RESPONDER_PASSWORD"] or abort("no environment variable EMAIL_RESPONDER_PASSWORD")
-MAILCHIMP_API_KEY = ENV["MAILCHIMP_API_KEY"] or abort("no environment variable MAILCHIMP_API_KEY")
-MAILCHIMP_LIST_ID = ENV["MAILCHIMP_LIST_ID"] or abort("no environment variable MAILCHIMP_LIST_ID")
 
 imap_filter = 'UNSEEN FROM getlantern.org'
 imap_filter = 'UNSEEN' if ENV["PRODUCTION"] == "true"
@@ -70,40 +69,12 @@ def send_to(to, subject, reply_id)
   end
 end
 
-def add_to_mailchimp(name, addr)
-  begin
-    merge_vars = nil
-    if name then
-      fname, lname = name.split
-      merge_vars = {
-        'FNAME' => fname,
-        'LNAME' => lname
-      }
-    end
-    mailchimp = Mailchimp::API.new(MAILCHIMP_API_KEY)
-    mailchimp.lists.subscribe(MAILCHIMP_LIST_ID,
-                              { "email" => addr },
-                              merge_vars,
-                              'html', # email_type
-                              false, # double_optin
-                              true) # update_existing
-    Mailman.logger.info "Added #{addr} to mailchimp"
-  rescue Exception => e
-    Mailman.logger.error "Exception occurred while add #{addr} to mailchimp"
-    Mailman.logger.error [e, *e.backtrace].join("\n")
-  end
-end
-
 Mailman::Application.run do
   from(/no[-_]*reply/) do
-    begin
-      from = message["From"].address_list.addresses[0].raw
-      subject = message["Subject"].value
-      Mailman.logger.info "Skip no reply mail from #{from}: #{subject}"
-    rescue Exception => e
-      Mailman.logger.error "Exception occurred while receiving message:\n#{message}"
-      Mailman.logger.error [e, *e.backtrace].join("\n")
-    end
+    ignore_mail message
+  end
+  from('mailer-daemon@googlemail.com') do
+    ignore_mail message
   end
 
   default do

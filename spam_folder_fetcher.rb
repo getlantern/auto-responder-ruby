@@ -2,6 +2,7 @@
 require "rubygems"
 require "bundler/setup"
 require "mailman"
+require_relative 'lib/ignore_mail'
 
 Mailman.config.poll_interval = 1
 
@@ -14,6 +15,13 @@ Mailman.config.imap = {
 }
 
 Mailman::Application.run do
+  from(/no[-_]*reply/) do
+    ignore_mail message
+  end
+  from('mailer-daemon@googlemail.com') do
+    ignore_mail message
+  end
+
   default do
     begin
       open('spam.csv', 'a') do |f|
