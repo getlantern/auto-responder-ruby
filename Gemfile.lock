@@ -10,6 +10,7 @@ GEM
     celluloid (0.16.0)
       timers (~> 4.0.0)
     coderay (1.1.0)
+    excon (0.45.4)
     ffi (1.9.8)
     hitimes (1.2.2)
     i18n (0.7.0)
@@ -20,6 +21,9 @@ GEM
       rb-inotify (>= 0.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
+    mailchimp-api (2.0.6)
+      excon (>= 0.16.0)
+      json (>= 1.7.7)
     maildir (2.2.1)
     mailman (0.7.3)
       activesupport (>= 2.3.4)
@@ -49,5 +53,6 @@ PLATFORMS
 
 DEPENDENCIES
   mail
+  mailchimp-api
   mailman
   pry
