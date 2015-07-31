@@ -80,7 +80,8 @@ Mailman::Application.run do
   default do
     begin
       from = message["From"].address_list.addresses[0].raw
-      subject = message["Subject"].value
+      subject = message["Subject"]
+      subject = subject ? subject.value : ''
       msg_id = message["Message-ID"].value
       send_to(from, subject, msg_id)
       name = message["From"].address_list.addresses[0].display_name
