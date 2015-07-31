@@ -1,3 +1,8 @@
 *.csv
-log
 *.apk
+*.txt
+*.html
+*.exe
+*.dmg
+*.deb
+*.pkg

@@ -3,18 +3,22 @@
 require "rubygems"
 require "bundler/setup"
 require "mailman"
-require 'base64'
 require_relative 'lib/mailchimp'
 require_relative 'lib/ignore_mail'
+require_relative 'lib/get_file'
 
 EMAIL_RESPONDER_ACCOUNT = ENV["EMAIL_RESPONDER_ACCOUNT"] or abort("no environment variable EMAIL_RESPONDER_ACCOUNT")
 EMAIL_RESPONDER_PASSWORD = ENV["EMAIL_RESPONDER_PASSWORD"] or abort("no environment variable EMAIL_RESPONDER_PASSWORD")
+EMAIL_REPLIER = ENV["EMAIL_REPLIER"] or abort("no environment variable EMAIL_REPLIER")
+BODY_TEXT_URL = ENV["BODY_TEXT_URL"] or abort("no environment variable BODY_TEXT_URL")
+BODY_HTML_URL = ENV["BODY_HTML_URL"] or abort("no environment variable BODY_HTML_URL")
 
+# For testing, only process mail sent from inside organization
 imap_filter = 'UNSEEN FROM getlantern.org'
 imap_filter = 'UNSEEN' if ENV["PRODUCTION"] == "true"
 
 Mailman.config.poll_interval = 1
-Mailman.config.logger = Logger.new(STDERR)
+Mailman.config.logger = Logger.new(STDERR) # it's required by Heroku
 
 Mailman.config.imap = {
   server: 'imap.gmail.com', port: 993, ssl: true,
@@ -32,6 +36,12 @@ Mail.defaults do
     enable_ssl:  true
 end
 
+$body_text_file = get_file(BODY_TEXT_URL)
+$body_html_file = get_file(BODY_HTML_URL)
+if ENV["ATTACHMENT_URL"] then
+  $body_html_file = get_file(ENV["ATTACHMENT_URL"])
+end
+
 def send_to(to, subject, reply_id)
   begin
     mail = Mail.new
@@ -46,19 +56,21 @@ def send_to(to, subject, reply_id)
     mail.header['References'] = reply_id
 
     mail.to = to
-    mail.from = 'Lantern Manoto <manato@getlantern.org>'
+    mail.from = EMAIL_REPLIER
     mail.subject = 'Re: ' + subject
     mail.text_part do
       content_transfer_encoding 'base64'
       content_type 'text/plain; charset=UTF-8'
-      body Base64.encode64(File.read('content.txt'))
+      body File.read($body_text_file)
     end
     mail.html_part do
       content_transfer_encoding 'base64'
       content_type 'text/html; charset=UTF-8'
-      body Base64.encode64(File.read('content.html'))
+      body File.read($body_html_file)
     end
-    # mail.add_file 'attachment_file'
+    if $attachment_file and File.exist? $attachment_file then
+      mail.add_file File.read($attachment_file)
+    end
 
     mail.deliver!
     Mailman.logger.info "Sent respond mail to \'#{to}\'"
