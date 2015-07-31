@@ -2,6 +2,7 @@ require 'mailchimp'
 
 MAILCHIMP_API_KEY = ENV["MAILCHIMP_API_KEY"] or abort("no environment variable MAILCHIMP_API_KEY")
 MAILCHIMP_LIST_ID = ENV["MAILCHIMP_LIST_ID"] or abort("no environment variable MAILCHIMP_LIST_ID")
+MAILCHIMP_LANG = ENV["MAILCHIMP_LANG"] or abort("no environment variable MAILCHIMP_LANG")
 
 def add_to_mailchimp(name, addr)
   begin
@@ -10,7 +11,8 @@ def add_to_mailchimp(name, addr)
       fname, lname = name.split
       merge_vars = {
         'FNAME' => fname,
-        'LNAME' => lname
+        'LNAME' => lname,
+        'mc_language' => MAILCHIMP_LANG
       }
     end
     mailchimp = Mailchimp::API.new(MAILCHIMP_API_KEY)
