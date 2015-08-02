@@ -24,12 +24,9 @@ Mailman.config.imap = {
   server: 'imap.gmail.com', port: 993, ssl: true,
   username: EMAIL_ACCOUNT,
   password: EMAIL_PASSWORD,
+  folder: ENV["HANDLE_SPAM"] == "true" ? '[Gmail]/Spam' : 'Inbox',
   filter: imap_filter
 }
-
-if ENV["HANDLE_SPAM"] == true then
-  Mailman.config.imap = '[Gmail]/Spam'
-end
 
 $body_text_file = get_file(BODY_TEXT_URL)
 $body_html_file = get_file(BODY_HTML_URL)

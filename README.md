@@ -2,6 +2,8 @@ A simple Ruby program to monitor an mail account on gmail.com through IMAP and s
 
 Make sure you DISABLED 2 step verification for the mail account.
 
+Gmail has limits on total mail sent per day. For production, we should use 3rd party services, say, Mandrill.
+
 # Run
 
 Ruby > 2.0.0 is required
