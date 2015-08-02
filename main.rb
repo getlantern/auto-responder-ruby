@@ -27,6 +27,10 @@ Mailman.config.imap = {
   filter: imap_filter
 }
 
+if ENV["HANDLE_SPAM"] == true then
+  Mailman.config.imap = '[Gmail]/Spam'
+end
+
 $body_text_file = get_file(BODY_TEXT_URL)
 $body_html_file = get_file(BODY_HTML_URL)
 if ENV["ATTACHMENT_URL"] then
