@@ -31,6 +31,9 @@ GEM
       listen (~> 2.2)
       mail (>= 2.0.3)
       maildir (>= 0.5.0)
+    mandrill-api (1.0.53)
+      excon (>= 0.16.0, < 1.0)
+      json (>= 1.7.7, < 2.0)
     method_source (0.8.2)
     mime-types (2.6.1)
     minitest (5.7.0)
@@ -55,4 +58,5 @@ DEPENDENCIES
   mail
   mailchimp-api
   mailman
+  mandrill-api
   pry

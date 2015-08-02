@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'open-uri'
-require 'base64'
 
 def get_file(url)
   matched = /^http.*\/([^\/\?]+)\??.*$/.match(url)
@@ -14,19 +13,19 @@ def get_file(url)
   else
     ims = DateTime.new().rfc2822
   end
-  $stderr.print("Fetching #{url}...")
+  $stderr.print "Fetching #{url}...\n"
   begin
     open(url, "rb", "If-Modified-Since" => ims ) do |read_file|
       open(fname, "wb") do |saved_file|
-        $stderr.print("Writing #{url} to #{fname}...")
-        saved_file.write(Base64.encode64(read_file.read))
+        $stderr.print "Writing #{url} to #{fname}...\n"
+        saved_file.write(read_file.read)
       end
     end
   rescue OpenURI::HTTPError => e
     if e.io.status[0] != "304" then
       raise
     end
-    puts "file has not changed."
+    $stderr.print "file has not changed.\n"
   end
   return fname
 end
