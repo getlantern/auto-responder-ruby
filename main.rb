@@ -35,6 +35,9 @@ if ENV["ATTACHMENT_URL"] then
 end
 
 Mailman::Application.run do
+  from(/^invit\+/) do
+    ignore_mail message
+  end
   from(/no[-_]*reply/) do
     ignore_mail message
   end

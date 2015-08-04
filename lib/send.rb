@@ -68,42 +68,41 @@ def send_to_mandrill(to_addr, to_name, subject, reply_id)
 end
 
 def send_to_smtp(to_addr, to_name, subject, reply_id)
-  begin
-    mail = Mail.new
+  tries ||=3
+  mail = Mail.new
 
-    # below are headers added by gmail auto responder
-    mail.header['Precedence'] = 'bulk'
-    mail.header['X-Autoreply'] = 'yes'
-    mail.header['Auto-Submitted'] = 'auto-replied'
+  # below are headers added by gmail auto responder
+  mail.header['Precedence'] = 'bulk'
+  mail.header['X-Autoreply'] = 'yes'
+  mail.header['Auto-Submitted'] = 'auto-replied'
 
-    # connect the reply to original mail
-    mail.header['In-Reply-To'] = reply_id
-    mail.header['References'] = reply_id
+  # connect the reply to original mail
+  mail.header['In-Reply-To'] = reply_id
+  mail.header['References'] = reply_id
 
-    mail.to = (to_name || '') + ' <' + to_addr + '>'
-    mail.from = REPLY_FROM_NAME + ' <' + REPLY_FROM_ADDR + '>'
-    mail.subject = 'Re: ' + subject
-    mail.text_part do
-      content_transfer_encoding 'base64'
-      content_type 'text/plain; charset=UTF-8'
-      body Base64.encode64(File.read($body_text_file))
-    end
-    mail.html_part do
-      content_transfer_encoding 'base64'
-      content_type 'text/html; charset=UTF-8'
-      body Base64.encode64(File.read($body_html_file))
-    end
-    if $attachment_file and File.exist? $attachment_file then
-      mail.add_file $attachment_file
-    end
-
-    mail.deliver!
-    Mailman.logger.info "Sent respond mail to \'#{mail.to}\'"
-
-  rescue Exception => e
-    Mailman.logger.error "Exception occurred while send response:\n#{mail}"
-    Mailman.logger.error [e, *e.backtrace].join("\n")
+  mail.to = (to_name || '') + ' <' + to_addr + '>'
+  mail.from = REPLY_FROM_NAME + ' <' + REPLY_FROM_ADDR + '>'
+  mail.subject = 'Re: ' + subject
+  mail.text_part do
+    content_transfer_encoding 'base64'
+    content_type 'text/plain; charset=UTF-8'
+    body Base64.encode64(File.read($body_text_file))
   end
+  mail.html_part do
+    content_transfer_encoding 'base64'
+    content_type 'text/html; charset=UTF-8'
+    body Base64.encode64(File.read($body_html_file))
+  end
+  if $attachment_file and File.exist? $attachment_file then
+    mail.add_file $attachment_file
+  end
+
+  mail.deliver!
+  Mailman.logger.info "Sent respond mail to \'#{mail.to}\'"
+
+rescue EOFError
+  retry unless (tries -= 1).zero?
+rescue Exception => e
+  Mailman.logger.error "Exception occurred while send response:\n#{mail.except(:text_part).except(:html_part)}"
+  Mailman.logger.error [e, *e.backtrace].join("\n")
 end
-
-
