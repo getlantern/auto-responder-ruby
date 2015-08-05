@@ -103,8 +103,8 @@ def send_to_smtp(to_addr, to_name, subject, reply_id)
 rescue EOFError
   retry unless (tries -= 1).zero?
 rescue Exception => e
-  mail.delete(:text_part)
-  mail.delete(:html_part)
-  Mailman.logger.error "Exception occurred while send response:\n#{main}"
+  mail.text_part = nil
+  mail.html_part = nil
+  Mailman.logger.error "Exception occurred while send response:\n#{mail}"
   Mailman.logger.error [e, *e.backtrace].join("\n")
 end
