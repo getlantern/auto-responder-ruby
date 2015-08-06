@@ -68,7 +68,6 @@ def send_to_mandrill(to_addr, to_name, subject, reply_id)
 end
 
 def send_to_smtp(to_addr, to_name, subject, reply_id)
-  tries ||=3
   mail = Mail.new
 
   # below are headers added by gmail auto responder
@@ -100,8 +99,6 @@ def send_to_smtp(to_addr, to_name, subject, reply_id)
   mail.deliver!
   Mailman.logger.info "Sent respond mail to \'#{mail.to}\'"
 
-rescue EOFError
-  retry unless (tries -= 1).zero?
 rescue Exception => e
   mail.text_part = nil
   mail.html_part = nil
