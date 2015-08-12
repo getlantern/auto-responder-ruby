@@ -24,8 +24,8 @@ def add_to_mailchimp(name, addr)
                               true) # update_existing
     Mailman.logger.info "Added #{addr} to mailchimp"
   rescue Exception => e
-    Mailman.logger.error "Exception occurred while add #{addr} to mailchimp"
-    Mailman.logger.error [e, *e.backtrace].join("\n")
+    Mailman.logger.info "Exception occurred while add #{addr} to mailchimp"
+    Mailman.logger.info [e, *e.backtrace].join("\n")
   end
 end
 
