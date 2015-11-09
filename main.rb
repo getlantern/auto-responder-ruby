@@ -44,6 +44,9 @@ Mailman::Application.run do
   from('mailer-daemon@googlemail.com') do
     ignore_mail message
   end
+  from(/^notification\+/) do
+    ignore_mail message
+  end
 
   default do
     begin
