@@ -103,5 +103,8 @@ rescue Exception => e
   mail.text_part = nil
   mail.html_part = nil
   Mailman.logger.error "Exception occurred while send response:\n#{mail}"
-  Mailman.logger.error [e, *e.backtrace].join("\n")
+  Mailman.logger.error e
+  for line in e.backtrace do
+    Mailman.logger.error  line
+  end
 end
