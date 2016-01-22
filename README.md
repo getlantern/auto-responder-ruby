@@ -1,6 +1,13 @@
 A simple Ruby program to monitor an mail account on gmail.com through IMAP and send response automatically.
 
-Make sure you DISABLED 2 step verification for the mail account.
+Make sure you have done following to the mail account to monitor.
+
+1. Enable IMAP (https://mail.google.com/mail/u/0/#settings/fwdandpop)
+2. DISABLED 2 step verification for the mail account. (https://myaccount.google.com/u/0/security)
+3. Turn "Allow less secure apps" option to "ON" at the same page as 2.
+4. Try lanching the responder, it will fail with something like below:
+`in `get_tagged_response': Unknown command g188mb26130086qkb (Net::IMAP::BadResponseError) `
+5. Visit https://g.co/allowaccess to allow access, and restart the responder.
 
 Gmail has limits on total mail sent per day. For production, we should use 3rd party services, say, Mandrill.
 
