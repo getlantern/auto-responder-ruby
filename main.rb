@@ -12,6 +12,7 @@ EMAIL_ACCOUNT = ENV["EMAIL_ACCOUNT"] or abort("no environment variable EMAIL_ACC
 EMAIL_PASSWORD = ENV["EMAIL_PASSWORD"] or abort("no environment variable EMAIL_PASSWORD")
 BODY_TEXT_URL = ENV["BODY_TEXT_URL"] or abort("no environment variable BODY_TEXT_URL")
 BODY_HTML_URL = ENV["BODY_HTML_URL"] or abort("no environment variable BODY_HTML_URL")
+REPLY_FROM_ADDR = ENV["REPLY_FROM_ADDR"] or abort("no environment variable REPLY_FROM_ADDR")
 
 # For testing, only process mail sent from inside organization
 imap_filter = 'UNSEEN FROM getlantern.org'
@@ -34,10 +35,13 @@ if ENV["ATTACHMENT_URL"] then
   $attachment_file = get_file(ENV["ATTACHMENT_URL"])
 end
 
-$stderr.print "Start monitoring emails sent to #{EMAIL_ACCOUNT}\n"
+$stderr.print "Monitor emails to #{EMAIL_ACCOUNT} and reply from #{REPLY_FROM_ADDR}\n"
 
 Mailman::Application.run do
   from(EMAIL_ACCOUNT) do
+    ignore_mail message
+  end
+  from(REPLY_FROM_ADDR) do
     ignore_mail message
   end
   from(/^invit/) do
