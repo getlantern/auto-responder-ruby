@@ -34,6 +34,8 @@ if ENV["ATTACHMENT_URL"] then
   $attachment_file = get_file(ENV["ATTACHMENT_URL"])
 end
 
+$stderr.print "Start monitoring emails sent to #{EMAIL_ACCOUNT}\n"
+
 Mailman::Application.run do
   from(EMAIL_ACCOUNT) do
     ignore_mail message
