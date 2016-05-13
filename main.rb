@@ -13,6 +13,7 @@ EMAIL_PASSWORD = ENV["EMAIL_PASSWORD"] or abort("no environment variable EMAIL_P
 BODY_TEXT_URL = ENV["BODY_TEXT_URL"] or abort("no environment variable BODY_TEXT_URL")
 BODY_HTML_URL = ENV["BODY_HTML_URL"] or abort("no environment variable BODY_HTML_URL")
 REPLY_FROM_ADDR = ENV["REPLY_FROM_ADDR"] or abort("no environment variable REPLY_FROM_ADDR")
+REPLY_FROM_NAME = ENV["REPLY_FROM_NAME"] or abort("no environment variable REPLY_FROM_NAME")
 
 # For testing, only process mail sent from inside organization
 imap_filter = 'UNSEEN FROM getlantern.org'
@@ -64,7 +65,7 @@ Mailman::Application.run do
       subject = message["Subject"]
       subject = subject ? subject.value : ''
       msg_id = message["Message-ID"].value
-      send_to(from_addr, from_name, subject, msg_id)
+      send_to(REPLY_FROM_ADDR, REPLY_FROM_NAME, from_addr, from_name, subject, msg_id)
       add_to_mailchimp(from_name, from_addr)
     rescue Exception => e
       Mailman.logger.error "Exception occurred while processing message:\n#{message}"

@@ -4,8 +4,6 @@ require 'base64'
 require "pp"
 
 MANDRILL_API_KEY=ENV["MANDRILL_API_KEY"] or abort("no environment variable MANDRILL_API_KEY")
-REPLY_FROM_ADDR = ENV["REPLY_FROM_ADDR"] or abort("no environment variable REPLY_FROM_ADDR")
-REPLY_FROM_NAME = ENV["REPLY_FROM_NAME"] or abort("no environment variable REPLY_FROM_NAME")
 
 Mail.defaults do
   delivery_method :smtp,
@@ -25,18 +23,18 @@ end
 #     enable_ssl:  true
 # end
 #
-def send_to(to_addr, to_name, subject, reply_id)
-  send_to_smtp to_addr, to_name, subject, reply_id
+def send_to(from_addr, from_name, to_addr, to_name, subject, reply_id)
+  send_to_smtp from_addr, from_name, to_addr, to_name, subject, reply_id
 end
 
-def send_to_mandrill(to_addr, to_name, subject, reply_id)
+def send_to_mandrill(from_addr, from_name, to_addr, to_name, subject, reply_id)
   begin
     mandrill = Mandrill::API.new MANDRILL_API_KEY
     message = {
       'html' => File.read($body_html_file),
       'text' => File.read($body_text_file),
-      'from_email' => REPLY_FROM_ADDR,
-      'from_name' => REPLY_FROM_NAME,
+      'from_email' => from_addr,
+      'from_name' => from_name,
       'subject' => 'Re: ' + subject,
       'to' => [{
         'email' => to_addr,
@@ -67,7 +65,7 @@ def send_to_mandrill(to_addr, to_name, subject, reply_id)
   end
 end
 
-def send_to_smtp(to_addr, to_name, subject, reply_id)
+def send_to_smtp(from_addr, from_name, to_addr, to_name, subject, reply_id)
   mail = Mail.new
 
   # below are headers added by gmail auto responder
@@ -80,7 +78,7 @@ def send_to_smtp(to_addr, to_name, subject, reply_id)
   mail.header['References'] = reply_id
 
   mail.to = (to_name || '') + ' <' + to_addr + '>'
-  mail.from = REPLY_FROM_NAME + ' <' + REPLY_FROM_ADDR + '>'
+  mail.from = from_name + ' <' + from_addr + '>'
   mail.subject = 'Re: ' + subject
   mail.text_part do
     content_transfer_encoding 'base64'
