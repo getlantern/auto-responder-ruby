@@ -22,9 +22,6 @@ GEM
       rb-inotify (>= 0.9)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
-    mailchimp-api (2.0.6)
-      excon (>= 0.16.0)
-      json (>= 1.7.7)
     maildir (2.2.1)
     mailman (0.7.3)
       activesupport (>= 2.3.4)
@@ -37,7 +34,7 @@ GEM
       json (>= 1.7.7, < 2.0)
     method_source (0.9.0)
     mini_mime (1.0.0)
-    minitest (5.11.0)
+    minitest (5.11.1)
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -55,7 +52,6 @@ PLATFORMS
 
 DEPENDENCIES
   mail
-  mailchimp-api
   mailman
   mandrill-api
   pry
