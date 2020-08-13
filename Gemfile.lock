@@ -11,7 +11,7 @@ GEM
       timers (~> 4.0.0)
     coderay (1.1.2)
     concurrent-ruby (1.1.7)
-    excon (0.60.0)
+    excon (0.76.0)
     ffi (1.13.1)
     hitimes (2.0.0)
     i18n (1.8.5)
