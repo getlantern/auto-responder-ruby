@@ -15,7 +15,7 @@ def get_file(url)
   end
   $stderr.print "Fetching #{url}...\n"
   begin
-    open(url, "rb", "If-Modified-Since" => ims ) do |read_file|
+    URI.open(url, "rb", "If-Modified-Since" => ims ) do |read_file|
       open(fname, "wb") do |saved_file|
         $stderr.print "Writing #{url} to #{fname}...\n"
         saved_file.write(read_file.read)
